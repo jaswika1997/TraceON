@@ -1,0 +1,33 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+backend/.venv/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+
+# Raw datasets - do not push large files
+data/raw/*.csv
+data/raw/*.zip
+data/processed/*
+!data/processed/.gitkeep
+
+# Generated ML models
+*.joblib
+*.pkl
+*.model
+
+# IDE and OS
+.vscode/
+.DS_Store
+Thumbs.db
