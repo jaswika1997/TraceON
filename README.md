@@ -1,35 +1,137 @@
+# TraceON
+### AI-Powered Financial Fraud Intelligence & Investigation Platform
 
-# TraceON Dataset
+TraceON is an AI-powered financial fraud detection and investigation
+platform designed to identify suspicious transactions, assess financial
+risk, explain model predictions, and support fraud investigations.
 
-## Primary Dataset: PaySim
+## Key Features
 
-Source: https://www.kaggle.com/datasets/ealaxi/paysim1
+- AI-based transaction fraud risk scoring
+- Transaction monitoring and risk classification
+- Explainable AI using SHAP
+- Fraud network intelligence
+- Suspicious activity detection
+- Investigation and case management
+- Fraud simulation sandbox
+- Automated investigation reports
 
-PaySim is a synthetic financial transaction dataset used for
-fraud detection research.
+## Technology Stack
 
-### Setup
+### Frontend
+- React.js
+- Vite
+- Tailwind CSS
+- Recharts
+- Framer Motion
+- React Router
 
-1. Download the dataset from Kaggle.
-2. Extract the ZIP file.
-3. Place the CSV inside `data/raw/`.
+### Backend
+- Python
+- FastAPI
+- Pandas
+- NumPy
 
-Expected filename:
+### Machine Learning
+- XGBoost
+- Scikit-learn
+- SHAP
+- Imbalanced-learn
 
-`PS_20174392719_1491204439457_log.csv`
+### Intelligence and Analytics
+- NetworkX
+- DBSCAN
+- Geo-spatial analysis
 
-### Important
+## Dataset
 
-The raw CSV is not tracked in Git because of its size.
-Each developer must download the dataset separately.
+TraceON currently uses the PaySim synthetic mobile money
+transaction dataset.
 
-### Intended use
+Dataset source:
+https://www.kaggle.com/datasets/ealaxi/paysim1
 
-- Fraud detection
+The dataset contains approximately 6.3 million transactions.
+
+The dataset is synthetic and does not represent real banking
+transactions or actual customer identities.
+
+Geographical, device, and IP-related intelligence may use
+simulated metadata and will be identified as such.
+
+## Project Structure
+
+- frontend/ - React frontend
+- backend/ - FastAPI backend and ML modules
+- data/ - Dataset storage
+- docs/ - Project documentation
+
+## Setup Instructions
+
+### Backend
+
+Navigate to the backend directory:
+
+    cd backend
+
+Create and activate a virtual environment:
+
+    python -m venv .venv
+
+Install dependencies:
+
+    pip install -r requirements.txt
+
+Download the PaySim dataset and place the CSV inside:
+
+    data/raw/
+
+Run the preprocessing, analytics, and model training scripts
+as required by the project setup.
+
+Start the backend:
+
+    uvicorn app.main:app --reload
+
+Backend API:
+http://127.0.0.1:8000
+
+API documentation:
+http://127.0.0.1:8000/docs
+
+### Frontend
+
+Open another terminal:
+
+    cd frontend
+
+Install dependencies:
+
+    npm install
+
+Start the frontend:
+
+    npm run dev
+
+Frontend:
+http://localhost:5173
+
+## Project Status
+
+Currently implemented:
+- PaySim data preprocessing
+- Dataset analytics
+- XGBoost fraud classification
 - Transaction risk scoring
-- Account relationship analysis
-- Fraud pattern clustering
+- SHAP-based prediction explanations
+- Transaction monitoring dashboard
+- Transaction explanation API
 
-Location data is not provided by PaySim.
-Any geographic demonstration data will be separately
-generated and clearly identified as simulated.
+Additional fraud intelligence and investigation modules
+are under development.
+
+## Disclaimer
+
+TraceON is an academic hackathon project using a synthetic
+dataset. Its predictions are experimental and should not
+be treated as financial advice or production banking decisions.

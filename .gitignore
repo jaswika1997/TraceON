@@ -31,3 +31,11 @@ data/processed/*
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Generated processed datasets and analytics
+data/processed/*.parquet
+data/processed/*.json
+
+# Python cache and test artifacts
+.pytest_cache/
+.coverage

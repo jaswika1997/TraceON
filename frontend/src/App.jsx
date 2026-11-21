@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/layout/Sidebar";
 import Topbar from "./components/layout/Topbar";
 import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
 
 const pages = {
-  "/transactions": "Transaction Monitor",
   "/intelligence": "Fraud Intelligence",
   "/early-warning": "Early Warning System",
   "/investigations": "Investigation Center",
@@ -19,7 +19,9 @@ function Placeholder({ title }) {
       <div className="mb-4 rounded-2xl border border-violet-500/20 bg-violet-500/10 p-5">
         <span className="text-3xl text-violet-400">✦</span>
       </div>
+
       <h1 className="text-2xl font-bold text-white">{title}</h1>
+
       <p className="mt-2 text-sm text-slate-500">
         This module is under development.
       </p>
@@ -38,6 +40,8 @@ function AppLayout() {
         <main className="p-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/transactions" element={<Transactions />} />
+
             {Object.entries(pages).map(([path, title]) => (
               <Route
                 key={path}

@@ -1,273 +1,346 @@
 
+import { useEffect, useState } from "react";
 import {
-  ShieldAlert,
-  ArrowLeftRight,
-  CircleDollarSign,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+import {
   Activity,
-  ArrowUpRight,
-  ArrowDownRight,
-  MoreHorizontal,
   AlertTriangle,
-  CheckCircle2,
-  Clock3,
+  ShieldCheck,
+  Wallet,
+  RefreshCw,
 } from "lucide-react";
 
-const stats = [
-  {
-    title: "Transactions Analyzed",
-    value: "24,891",
-    change: "+12.8%",
-    positive: true,
-    icon: ArrowLeftRight,
-    color: "violet",
-  },
-  {
-    title: "Fraud Detected",
-    value: "1,284",
-    change: "+8.2%",
-    positive: false,
-    icon: ShieldAlert,
-    color: "rose",
-  },
-  {
-    title: "Amount at Risk",
-    value: "₹48.2L",
-    change: "-4.6%",
-    positive: true,
-    icon: CircleDollarSign,
-    color: "amber",
-  },
-  {
-    title: "Detection Accuracy",
-    value: "96.8%",
-    change: "+2.4%",
-    positive: true,
-    icon: Activity,
-    color: "emerald",
-  },
-];
+import api from "../services/api";
 
-const transactions = [
-  { id: "TXN-90281", account: "ACC-8821", amount: "₹84,500", risk: "Critical", location: "Mumbai, IN", time: "2 min ago" },
-  { id: "TXN-90280", account: "ACC-1942", amount: "₹42,000", risk: "High", location: "Delhi, IN", time: "5 min ago" },
-  { id: "TXN-90279", account: "ACC-6610", amount: "₹12,800", risk: "Medium", location: "Bengaluru, IN", time: "8 min ago" },
-  { id: "TXN-90278", account: "ACC-3318", amount: "₹2,400", risk: "Low", location: "Pune, IN", time: "12 min ago" },
-];
+const formatNumber = (value) =>
+  new Intl.NumberFormat("en-IN").format(value);
 
-const riskStyles = {
-  Critical: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-  High: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  Medium: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  Low: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-};
+const formatAmount = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    maximumFractionDigits: 2,
+  }).format(value);
 
-function StatCard({ item }) {
-  const Icon = item.icon;
+function Dashboard() {
+  const [analytics, setAnalytics] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const iconStyles = {
-    violet: "bg-violet-500/10 text-violet-400",
-    rose: "bg-rose-500/10 text-rose-400",
-    amber: "bg-amber-500/10 text-amber-400",
-    emerald: "bg-emerald-500/10 text-emerald-400",
+  const fetchAnalytics = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await api.get("/analytics/summary");
+
+      if (!response.data.available) {
+        throw new Error("Analytics data is not available.");
+      }
+
+      setAnalytics(response.data.analytics);
+    } catch (err) {
+      console.error("Analytics error:", err);
+      setError(
+        err.response?.data?.detail ||
+        err.message ||
+        "Unable to load analytics."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#101626] p-5 transition hover:border-violet-500/30">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-400">{item.title}</p>
-        <div className={`rounded-xl p-2.5 ${iconStyles[item.color]}`}>
-          <Icon size={19} />
-        </div>
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-8 text-slate-300">
+        <Activity className="mb-3 animate-pulse" />
+        Loading TraceON analytics...
       </div>
+    );
+  }
 
-      <h3 className="mt-5 text-2xl font-bold tracking-tight text-white">
-        {item.value}
-      </h3>
-
-      <div className="mt-3 flex items-center gap-2">
-        {item.positive ? (
-          <ArrowUpRight size={15} className="text-emerald-400" />
-        ) : (
-          <ArrowDownRight size={15} className="text-rose-400" />
-        )}
-        <span className={`text-xs font-medium ${item.positive ? "text-emerald-400" : "text-rose-400"}`}>
-          {item.change}
-        </span>
-        <span className="text-xs text-slate-600">vs previous period</span>
+  if (error) {
+    return (
+      <div className="m-6 rounded-xl border border-red-500/30 bg-red-500/10 p-6">
+        <p className="text-red-400">{error}</p>
+        <button
+          onClick={fetchAnalytics}
+          className="mt-4 rounded-lg bg-slate-700 px-4 py-2 text-white"
+        >
+          Retry
+        </button>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-export default function Dashboard() {
+  const metrics = [
+    {
+      title: "Total Transactions",
+      value: formatNumber(analytics.total_transactions),
+      description: "Full PaySim dataset",
+      icon: Activity,
+      color: "text-cyan-400",
+    },
+    {
+      title: "Fraud Transactions",
+      value: formatNumber(analytics.fraud_transactions),
+      description: "Fraud-labelled records",
+      icon: AlertTriangle,
+      color: "text-red-400",
+    },
+    {
+      title: "Legitimate Transactions",
+      value: formatNumber(analytics.legitimate_transactions),
+      description: "Legitimate-labelled records",
+      icon: ShieldCheck,
+      color: "text-emerald-400",
+    },
+    {
+      title: "Fraud Rate",
+      value: `${analytics.fraud_rate}%`,
+      description: "Percentage of all transactions",
+      icon: Wallet,
+      color: "text-violet-400",
+    },
+  ];
+
+  const transactionTypeData = Object.entries(
+    analytics.transaction_types
+  ).map(([name, value]) => ({
+    name,
+    transactions: value,
+  }));
+
+  const fraudData = [
+    {
+      name: "Fraud",
+      value: analytics.fraud_transactions,
+    },
+    {
+      name: "Legitimate",
+      value: analytics.legitimate_transactions,
+    },
+  ];
+
   return (
-    <div className="space-y-7">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="space-y-8 p-6 text-white">
+
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            <p className="text-xs font-medium uppercase tracking-widest text-emerald-400">
-              System overview
-            </p>
-          </div>
-          <h1 className="mt-2 text-2xl font-bold text-white">
-            Welcome to TraceON
+          <h1 className="text-3xl font-bold">
+            Overview
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Monitor transactions, identify threats and investigate suspicious activity.
+          <p className="mt-2 text-sm text-slate-400">
+            Financial fraud intelligence and transaction analytics
           </p>
         </div>
 
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-xs text-slate-400">
-          Demo dashboard · Sample data
+        <button
+          onClick={fetchAnalytics}
+          className="flex items-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800"
+        >
+          <RefreshCw size={16} />
+          Refresh data
+        </button>
+      </div>
+
+      {/* Dataset status */}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+        <div>
+          <p className="font-medium text-emerald-400">
+            Dataset successfully connected
+          </p>
+          <p className="mt-1 text-xs text-slate-400">
+            Source: {analytics.source}
+          </p>
         </div>
+
+        <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs text-emerald-400">
+          Live API data
+        </span>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((item) => (
-          <StatCard key={item.title} item={item} />
-        ))}
-      </div>
+      {/* Metric cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {metrics.map((metric) => {
+          const Icon = metric.icon;
 
-      <div className="grid gap-5 xl:grid-cols-3">
-        <div className="rounded-2xl border border-white/[0.07] bg-[#101626] p-5 xl:col-span-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-white">Fraud Activity</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                Illustrative transaction risk distribution
+          return (
+            <div
+              key={metric.title}
+              className="rounded-xl border border-slate-800 bg-[#111827] p-5"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-slate-400">
+                  {metric.title}
+                </p>
+                <Icon className={metric.color} size={21} />
+              </div>
+
+              <h2 className="mt-4 text-2xl font-bold">
+                {metric.value}
+              </h2>
+
+              <p className="mt-2 text-xs text-slate-500">
+                {metric.description}
               </p>
             </div>
-            <button className="rounded-lg p-2 text-slate-500 hover:bg-white/5">
-              <MoreHorizontal size={20} />
-            </button>
-          </div>
+          );
+        })}
+      </div>
 
-          <div className="mt-8 flex h-48 items-end gap-3">
-            {[35, 52, 42, 72, 48, 85, 60, 44, 68, 92, 55, 76].map((height, i) => (
-              <div key={i} className="group flex h-full flex-1 flex-col justify-end">
-                <div
-                  style={{ height: `${height}%` }}
-                  className="w-full rounded-t-md bg-gradient-to-t from-violet-700 to-cyan-400 opacity-80 transition group-hover:opacity-100"
+      {/* Additional statistics */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="rounded-xl border border-slate-800 bg-[#111827] p-5">
+          <p className="text-sm text-slate-400">
+            Total Transaction Amount
+          </p>
+          <h2 className="mt-3 text-2xl font-bold">
+            {formatAmount(analytics.total_transaction_amount)}
+          </h2>
+          <p className="mt-2 text-xs text-slate-500">
+            Sum of transaction amounts in PaySim
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-slate-800 bg-[#111827] p-5">
+          <p className="text-sm text-slate-400">
+            Average Transaction Amount
+          </p>
+          <h2 className="mt-3 text-2xl font-bold">
+            {formatAmount(analytics.average_transaction_amount)}
+          </h2>
+          <p className="mt-2 text-xs text-slate-500">
+            Largest transaction:{" "}
+            {formatAmount(analytics.largest_transaction_amount)}
+          </p>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+
+        {/* Transaction type chart */}
+        <div className="rounded-xl border border-slate-800 bg-[#111827] p-5">
+          <h2 className="text-lg font-semibold">
+            Transaction Type Distribution
+          </h2>
+
+          <p className="mt-1 text-xs text-slate-400">
+            Number of transactions by type
+          </p>
+
+          <div className="mt-6 h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={transactionTypeData}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#263244"
                 />
-                <span className="mt-3 text-center text-[10px] text-slate-600">
-                  {i + 1}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-5 flex flex-wrap gap-5 border-t border-white/[0.07] pt-4">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="h-2 w-2 rounded-full bg-violet-500" />
-              Transaction activity
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="h-2 w-2 rounded-full bg-cyan-400" />
-              Risk intensity
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-white/[0.07] bg-[#101626] p-5">
-          <h3 className="font-semibold text-white">Risk Distribution</h3>
-          <p className="mt-1 text-xs text-slate-500">Sample flagged transactions</p>
-
-          <div className="mt-8 flex items-center justify-center">
-            <div className="relative flex h-40 w-40 items-center justify-center rounded-full"
-              style={{ background: "conic-gradient(#f43f5e 0% 18%, #f97316 18% 43%, #f59e0b 43% 68%, #10b981 68% 100%)" }}>
-              <div className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-[#101626]">
-                <span className="text-2xl font-bold text-white">100%</span>
-                <span className="text-[10px] text-slate-500">Sample data</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-7 space-y-3">
-            {[
-              ["Critical", "18%", "bg-rose-500"],
-              ["High", "25%", "bg-orange-500"],
-              ["Medium", "25%", "bg-amber-500"],
-              ["Low", "32%", "bg-emerald-500"],
-            ].map(([name, value, color]) => (
-              <div key={name} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <span className={`h-2 w-2 rounded-full ${color}`} />
-                  {name}
-                </div>
-                <span className="font-medium text-white">{value}</span>
-              </div>
-            ))}
+                <XAxis
+                  dataKey="name"
+                  stroke="#94a3b8"
+                  tick={{ fontSize: 11 }}
+                />
+                <YAxis
+                  stroke="#94a3b8"
+                  tickFormatter={(value) =>
+                    `${(value / 1000000).toFixed(1)}M`
+                  }
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "#111827",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
+                  }}
+                  formatter={(value) => [
+                    formatNumber(value),
+                    "Transactions",
+                  ]}
+                />
+                <Bar
+                  dataKey="transactions"
+                  fill="#8b5cf6"
+                  radius={[5, 5, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
-      </div>
 
-      <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#101626]">
-        <div className="flex items-center justify-between border-b border-white/[0.07] p-5">
-          <div>
-            <h3 className="font-semibold text-white">Recent Suspicious Transactions</h3>
-            <p className="mt-1 text-xs text-slate-500">Illustrative records for UI development</p>
+        {/* Fraud distribution */}
+        <div className="rounded-xl border border-slate-800 bg-[#111827] p-5">
+          <h2 className="text-lg font-semibold">
+            Fraud Distribution
+          </h2>
+
+          <p className="mt-1 text-xs text-slate-400">
+            Ground-truth labels in the PaySim dataset
+          </p>
+
+          <div className="mt-6 h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={fraudData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={65}
+                  outerRadius={100}
+                  paddingAngle={3}
+                >
+                  <Cell fill="#ef4444" />
+                  <Cell fill="#10b981" />
+                </Pie>
+
+                <Tooltip
+                  contentStyle={{
+                    background: "#111827",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
+                  }}
+                  formatter={(value) => formatNumber(value)}
+                />
+
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-          <button className="text-xs font-medium text-violet-400 hover:text-violet-300">
-            View all
-          </button>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[700px] text-left text-sm">
-            <thead className="bg-white/[0.02] text-[11px] uppercase tracking-wider text-slate-500">
-              <tr>
-                <th className="px-5 py-4 font-medium">Transaction ID</th>
-                <th className="px-5 py-4 font-medium">Account</th>
-                <th className="px-5 py-4 font-medium">Amount</th>
-                <th className="px-5 py-4 font-medium">Risk level</th>
-                <th className="px-5 py-4 font-medium">Location</th>
-                <th className="px-5 py-4 font-medium">Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((txn) => (
-                <tr key={txn.id} className="border-t border-white/[0.05] transition hover:bg-white/[0.02]">
-                  <td className="px-5 py-4 font-medium text-violet-300">{txn.id}</td>
-                  <td className="px-5 py-4 text-slate-400">{txn.account}</td>
-                  <td className="px-5 py-4 font-medium text-white">{txn.amount}</td>
-                  <td className="px-5 py-4">
-                    <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${riskStyles[txn.risk]}`}>
-                      {txn.risk}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-slate-400">{txn.location}</td>
-                  <td className="px-5 py-4 text-slate-500">{txn.time}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="flex items-center gap-3 rounded-xl border border-rose-500/10 bg-rose-500/[0.04] p-4">
-          <AlertTriangle className="text-rose-400" size={20} />
-          <div>
-            <p className="text-sm font-semibold text-white">Critical alerts</p>
-            <p className="text-xs text-slate-500">Demo alert indicator</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 rounded-xl border border-amber-500/10 bg-amber-500/[0.04] p-4">
-          <Clock3 className="text-amber-400" size={20} />
-          <div>
-            <p className="text-sm font-semibold text-white">Pending reviews</p>
-            <p className="text-xs text-slate-500">Demo review indicator</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 rounded-xl border border-emerald-500/10 bg-emerald-500/[0.04] p-4">
-          <CheckCircle2 className="text-emerald-400" size={20} />
-          <div>
-            <p className="text-sm font-semibold text-white">Platform status</p>
-            <p className="text-xs text-slate-500">Frontend running locally</p>
-          </div>
-        </div>
+      {/* Important note */}
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+        <p className="text-sm font-medium text-amber-400">
+          Dataset analytics — not model predictions
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          Fraud statistics are calculated from the existing isFraud
+          labels in PaySim. TraceON's machine learning model has not
+          yet generated these predictions.
+        </p>
       </div>
     </div>
   );
 }
+
+export default Dashboard;

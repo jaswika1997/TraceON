@@ -1,0 +1,45 @@
+{
+    "training_rows": 206557,
+    "testing_rows": 51640,
+    "fraud_training_rows": 6558,
+    "fraud_testing_rows": 1639,
+    "pr_auc": 0.9965534520209616,
+    "roc_auc": 0.9995893309711598,
+    "classification_report": {
+        "0": {
+            "precision": 0.9997395781165488,
+            "recall": 0.99810003799924,
+            "f1-score": 0.9989191353082466,
+            "support": 50001.0
+        },
+        "1": {
+            "precision": 0.9447995351539803,
+            "recall": 0.9920683343502136,
+            "f1-score": 0.9678571428571429,
+            "support": 1639.0
+        },
+        "accuracy": 0.9979085979860574,
+        "macro avg": {
+            "precision": 0.9722695566352646,
+            "recall": 0.9950841861747268,
+            "f1-score": 0.9833881390826947,
+            "support": 51640.0
+        },
+        "weighted avg": {
+            "precision": 0.9979958381782132,
+            "recall": 0.9979085979860574,
+            "f1-score": 0.9979332599088013,
+            "support": 51640.0
+        }
+    },
+    "confusion_matrix": [
+        [
+            49906,
+            95
+        ],
+        [
+            13,
+            1626
+        ]
+    ]
+}

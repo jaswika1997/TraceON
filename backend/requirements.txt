@@ -13,3 +13,4 @@ sqlalchemy
 reportlab
 joblib
 pydantic-settings
+pyarrow
