@@ -1,12 +1,13 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Sidebar from "./components/layout/Sidebar";
 import Topbar from "./components/layout/Topbar";
+
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
+import Intelligence from "./pages/Intelligence";
 
 const pages = {
-  "/intelligence": "Fraud Intelligence",
   "/early-warning": "Early Warning System",
   "/investigations": "Investigation Center",
   "/sandbox": "Fraud Sandbox",
@@ -40,7 +41,10 @@ function AppLayout() {
         <main className="p-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+
             <Route path="/transactions" element={<Transactions />} />
+
+            <Route path="/intelligence" element={<Intelligence />} />
 
             {Object.entries(pages).map(([path, title]) => (
               <Route
