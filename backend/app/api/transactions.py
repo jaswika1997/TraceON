@@ -171,3 +171,82 @@ def get_transaction_explanation(transaction_id: int):
         status_code=404,
         detail="Transaction not found"
     )
+@router.get("/accounts/{account_id}/transactions")
+def get_account_transactions(
+    account_id: str,
+    limit: int = Query(20, ge=1, le=100)
+):
+    if not DATA_PATH.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Processed dataset not found"
+        )
+
+    parquet_file = pq.ParquetFile(DATA_PATH)
+
+    transactions = []
+    current_row = 0
+
+    columns = [
+        "nameOrig",
+        "nameDest",
+        "amount",
+        "type_code",
+        "step",
+        "isFraud"
+    ]
+
+    for batch in parquet_file.iter_batches(
+        batch_size=50000,
+        columns=columns
+    ):
+        batch_df = batch.to_pandas()
+
+        # Find transactions where the account is sender or receiver
+        matching = batch_df[
+            (batch_df["nameOrig"] == account_id) |
+            (batch_df["nameDest"] == account_id)
+        ]
+
+        for index, row in matching.iterrows():
+
+            transaction_id = current_row + index
+
+            transactions.append({
+                "transaction_id": int(transaction_id),
+                "sender": str(row["nameOrig"]),
+                "receiver": str(row["nameDest"]),
+                "direction": (
+                    "Outgoing"
+                    if row["nameOrig"] == account_id
+                    else "Incoming"
+                ),
+                "transaction_type": TRANSACTION_TYPES.get(
+                    int(row["type_code"]), "UNKNOWN"
+                ),
+                "amount": float(row["amount"]),
+                "step": int(row["step"]),
+                "actual_label": int(row["isFraud"]),
+                "status": (
+                    "Fraud-labelled"
+                    if int(row["isFraud"]) == 1
+                    else "Legitimate"
+                )
+            })
+
+        current_row += len(batch_df)
+
+    # Show most recent matching dataset records first
+    transactions.sort(
+        key=lambda transaction: transaction["transaction_id"],
+        reverse=True
+    )
+
+    transactions = transactions[:limit]
+
+    return {
+        "success": True,
+        "account_id": account_id,
+        "count": len(transactions),
+        "transactions": transactions
+    }

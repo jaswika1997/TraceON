@@ -13,6 +13,7 @@ from app.data.loader import (
 from app.ml.predict import predict_fraud
 from app.ml.explainability import explain_prediction
 from app.api.transactions import router as transactions_router
+from app.api.intelligence import router as intelligence_router
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SUMMARY_PATH = PROJECT_ROOT / "data" / "processed" / "analytics_summary.json"
@@ -39,6 +40,13 @@ app.include_router(
     transactions_router,
     prefix="/api/v1",
     tags=["Transactions"]
+)
+
+# Fraud Intelligence routes
+app.include_router(
+    intelligence_router,
+    prefix="/api/v1/intelligence",
+    tags=["Fraud Intelligence"]
 )
 
 @app.get("/")
