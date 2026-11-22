@@ -1,0 +1,71 @@
+[
+    {
+        "case_id": "CASE-6BF78A2C",
+        "alert_id": "ALT-SIM-TXN-00330-IP_CHANGE",
+        "transaction_id": "SIM-TXN-00330",
+        "account_id": "C1001571964",
+        "alert_type": "IP_CHANGE",
+        "severity": "MEDIUM",
+        "risk_score": 60,
+        "reason": "Account IP address changed from 10.140.20.245 to 172.16.126.47.",
+        "event_city": "Kolkata",
+        "status": "UNDER_REVIEW",
+        "assigned_to": "Analyst 1",
+        "notes": [
+            {
+                "note": "Reviewing suspicious account activity.",
+                "created_at": "2026-11-22T16:08:06.222352+00:00"
+            }
+        ],
+        "created_at": "2026-11-22T16:03:12.190575+00:00",
+        "updated_at": "2026-11-22T16:08:06.222379+00:00"
+    },
+    {
+        "case_id": "CASE-95CD269D",
+        "alert_id": "ALT-SIM-TXN-00064-GEO_VELOCITY",
+        "transaction_id": "SIM-TXN-00064",
+        "account_id": "C1005162369",
+        "alert_type": "GEO_VELOCITY",
+        "severity": "CRITICAL",
+        "risk_score": 79,
+        "reason": "Account location changed from Mumbai to Jaipur. Travel distance: 920.74 km in 1 hour(s), estimated speed: 920.74 km/h.",
+        "event_city": "Jaipur",
+        "status": "OPEN",
+        "assigned_to": null,
+        "notes": [],
+        "created_at": "2026-11-22T16:24:04.249567+00:00",
+        "updated_at": "2026-11-22T16:24:04.249567+00:00"
+    },
+    {
+        "case_id": "CASE-8C240498",
+        "alert_id": "ALT-LIVE-TXN-001-GEO_VELOCITY",
+        "transaction_id": "LIVE-TXN-001",
+        "account_id": "C1001571964",
+        "alert_type": "GEO_VELOCITY",
+        "severity": "CRITICAL",
+        "risk_score": 85,
+        "reason": "Location changed from Bengaluru to Kolkata. Distance: 1560.70 km in 1 hour(s). Estimated speed: 1560.70 km/h.",
+        "event_city": "Kolkata",
+        "status": "OPEN",
+        "assigned_to": null,
+        "notes": [],
+        "created_at": "2026-11-22T16:44:12.754073+00:00",
+        "updated_at": "2026-11-22T16:44:12.754073+00:00"
+    },
+    {
+        "case_id": "CASE-03F0EA48",
+        "alert_id": "ALT-LIVE-TXN-001-NEW_DEVICE",
+        "transaction_id": "LIVE-TXN-001",
+        "account_id": "C1001571964",
+        "alert_type": "NEW_DEVICE",
+        "severity": "MEDIUM",
+        "risk_score": 65,
+        "reason": "Device changed from DEVICE-OLD-001 to DEVICE-NEW-001.",
+        "event_city": "Kolkata",
+        "status": "OPEN",
+        "assigned_to": null,
+        "notes": [],
+        "created_at": "2026-11-22T16:44:16.285580+00:00",
+        "updated_at": "2026-11-22T16:44:16.285580+00:00"
+    }
+]

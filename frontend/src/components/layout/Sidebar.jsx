@@ -20,8 +20,6 @@ const navigation = [
   { name: "Early Warning", path: "/early-warning", icon: Activity },
   { name: "Live Evaluation", path: "/live-evaluation", icon: ScanSearch },
   { name: "Investigations", path: "/investigations", icon: BriefcaseBusiness },
-  { name: "Fraud Sandbox", path: "/sandbox", icon: FlaskConical },
-  { name: "Reports", path: "/reports", icon: FileText },
 ];
 
 export default function Sidebar() {
