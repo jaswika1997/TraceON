@@ -49,12 +49,6 @@ Detects suspicious changes in transaction context through:
 - View case details and associated suspicious activity.
 - Prevent duplicate cases for the same alert.
 
-### 7. Additional Modules
-- Fraud Simulation Sandbox.
-- Automated Investigation Reports.
-
-These modules are planned for further development.
-
 ## Technology Stack
 
 ### Frontend
@@ -81,7 +75,6 @@ These modules are planned for further development.
 
 ### Intelligence and Analytics
 - NetworkX
-- DBSCAN
 - Geospatial analysis
 - Haversine distance calculation
 
@@ -240,11 +233,6 @@ http://localhost:5173
 - Combined live transaction evaluation.
 - Investigation case creation and management.
 - Analyst assignment, status updates, and investigation notes.
-
-### Planned / Under Development
-- Fraud Simulation Sandbox.
-- Automated Investigation Reports.
-- Further integration and refinement of investigation workflows.
 
 ## Disclaimer
 
