@@ -15,6 +15,9 @@ from app.ml.explainability import explain_prediction
 from app.api.transactions import router as transactions_router
 from app.api.intelligence import router as intelligence_router
 
+from app.api.early_warning import router as early_warning_router
+from app.api.investigations import router as investigations_router
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SUMMARY_PATH = PROJECT_ROOT / "data" / "processed" / "analytics_summary.json"
 
@@ -120,3 +123,16 @@ def explain_transaction(transaction: dict):
         return explain_prediction(transaction)
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error))
+
+# Early Warning routes
+app.include_router(
+    early_warning_router,
+    prefix="/api/v1",
+    tags=["Early Warning"]
+)
+
+app.include_router(
+    investigations_router,
+    prefix="/api/v1",
+    tags=["Investigations"]
+)

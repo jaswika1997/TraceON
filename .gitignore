@@ -39,3 +39,6 @@ data/processed/*.json
 # Python cache and test artifacts
 .pytest_cache/
 .coverage
+
+# Runtime investigation data
+backend/data/

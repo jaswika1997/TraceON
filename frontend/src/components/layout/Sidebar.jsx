@@ -8,8 +8,9 @@ import {
   FlaskConical,
   FileText,
   ShieldCheck,
-  ChevronLeft,
+  ScanSearch,
 } from "lucide-react";
+
 import { NavLink } from "react-router-dom";
 
 const navigation = [
@@ -17,6 +18,7 @@ const navigation = [
   { name: "Transactions", path: "/transactions", icon: ArrowLeftRight },
   { name: "Fraud Intelligence", path: "/intelligence", icon: Network },
   { name: "Early Warning", path: "/early-warning", icon: Activity },
+  { name: "Live Evaluation", path: "/live-evaluation", icon: ScanSearch },
   { name: "Investigations", path: "/investigations", icon: BriefcaseBusiness },
   { name: "Fraud Sandbox", path: "/sandbox", icon: FlaskConical },
   { name: "Reports", path: "/reports", icon: FileText },
@@ -29,8 +31,11 @@ export default function Sidebar() {
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 shadow-lg shadow-violet-600/20">
           <ShieldCheck size={23} className="text-white" />
         </div>
+
         <div>
-          <h1 className="text-xl font-bold tracking-wide text-white">TraceON</h1>
+          <h1 className="text-xl font-bold tracking-wide text-white">
+            TraceON
+          </h1>
           <p className="text-[10px] tracking-[2px] text-slate-500">
             FRAUD INTELLIGENCE
           </p>
@@ -71,10 +76,12 @@ export default function Sidebar() {
               Intelligence Engine
             </span>
           </div>
+
           <p className="mt-2 text-[11px] text-slate-500">
             Platform interface initialized
           </p>
         </div>
+
         <p className="mt-4 text-center text-[10px] text-slate-600">
           TRACEON • HACKATHON BUILD
         </p>

@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/layout/Sidebar";
@@ -6,10 +7,11 @@ import Topbar from "./components/layout/Topbar";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Intelligence from "./pages/Intelligence";
+import EarlyWarning from "./pages/EarlyWarning";
+import LiveEvaluation from "./pages/LiveEvaluation";
+import Investigations from "./pages/Investigations";
 
 const pages = {
-  "/early-warning": "Early Warning System",
-  "/investigations": "Investigation Center",
   "/sandbox": "Fraud Sandbox",
   "/reports": "Investigation Reports",
 };
@@ -42,9 +44,30 @@ function AppLayout() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
 
-            <Route path="/transactions" element={<Transactions />} />
+            <Route
+              path="/transactions"
+              element={<Transactions />}
+            />
 
-            <Route path="/intelligence" element={<Intelligence />} />
+            <Route
+              path="/intelligence"
+              element={<Intelligence />}
+            />
+
+            <Route
+              path="/early-warning"
+              element={<EarlyWarning />}
+            />
+
+            <Route
+              path="/live-evaluation"
+              element={<LiveEvaluation />}
+            />
+
+            <Route
+              path="/investigations"
+              element={<Investigations />}
+            />
 
             {Object.entries(pages).map(([path, title]) => (
               <Route
